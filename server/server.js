@@ -21,12 +21,10 @@ const connectDB = async () => {
     const conn = await mongoose.connect(process.env.MONGO_URI);
     console.log(`MongoDB Connected: ${conn.connection.host}`);
 
-    // Schedule daily data ingestion at midnight (00:00)
-    cron.schedule('0 0 * * *', async () => {
-      console.log('Running scheduled daily data ingestion...');
-      await ingestData(true);
-    });
-    console.log('Data ingestion cron job scheduled to run daily at midnight.');
+    // Run data ingestion immediately on server startup
+    // (This is perfect for free hosting like Render that wakes up when the site is loaded)
+    console.log('Running data ingestion on server startup...');
+    ingestData(true).catch(console.error);
 
   } catch (err) {
     console.error(`Database connection error: ${err.message}`);
